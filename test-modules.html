@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模块加载测试</title>
+</head>
+<body>
+    <h1>模块加载测试</h1>
+    <pre id="status" style="font-size: 14px; line-height: 1.8;"></pre>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <script type="module">
+        const status = document.getElementById('status');
+        function log(msg) {
+            status.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        log('开始测试模块加载...\n');
+        
+        // 测试 Three.js
+        try {
+            log('1. 加载 Three.js...');
+            const THREE = await import('three');
+            log('   ✅ Three.js 成功');
+        } catch (e) {
+            log('   ❌ Three.js 失败: ' + e.message);
+        }
+        
+        // 测试 OrbitControls
+        try {
+            log('2. 加载 OrbitControls...');
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+            log('   ✅ OrbitControls 成功');
+        } catch (e) {
+            log('   ❌ OrbitControls 失败: ' + e.message);
+        }
+        
+        // 测试 OBJLoader
+        try {
+            log('3. 加载 OBJLoader...');
+            const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
+            log('   ✅ OBJLoader 成功');
+        } catch (e) {
+            log('   ❌ OBJLoader 失败: ' + e.message);
+        }
+        
+        // 测试本地模块
+        try {
+            log('4. 加载 OBJParser.js...');
+            const { OBJParser } = await import('./js/OBJParser.js');
+            log('   ✅ OBJParser 成功');
+        } catch (e) {
+            log('   ❌ OBJParser 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        try {
+            log('5. 加载 SeamProcessor.js...');
+            const { SeamProcessor } = await import('./js/SeamProcessor.js');
+            log('   ✅ SeamProcessor 成功');
+        } catch (e) {
+            log('   ❌ SeamProcessor 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        try {
+            log('6. 加载 MeshFlattener.js...');
+            const { MeshFlattener } = await import('./js/MeshFlattener.js');
+            log('   ✅ MeshFlattener 成功');
+        } catch (e) {
+            log('   ❌ MeshFlattener 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        try {
+            log('7. 加载 BFFFlattener.js...');
+            const { BFFFlattener } = await import('./js/BFFFlattener.js');
+            log('   ✅ BFFFlattener 成功');
+        } catch (e) {
+            log('   ❌ BFFFlattener 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        try {
+            log('8. 加载 Renderer2D.js...');
+            const { Renderer2D } = await import('./js/Renderer2D.js');
+            log('   ✅ Renderer2D 成功');
+        } catch (e) {
+            log('   ❌ Renderer2D 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        // 测试 main.js
+        try {
+            log('9. 加载 main.js...');
+            await import('./js/main.js');
+            log('   ✅ main.js 成功');
+        } catch (e) {
+            log('   ❌ main.js 失败: ' + e.message);
+            console.error(e);
+        }
+        
+        log('\n测试完成！');
+        log('window.app = ' + (window.app ? '已创建' : '未创建'));
+    </script>
+</body>
+</html>
+

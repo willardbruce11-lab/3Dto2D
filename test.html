@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Three.js 加载测试</title>
+</head>
+<body>
+    <h1>Three.js 加载测试</h1>
+    <div id="status">正在测试...</div>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <script type="module">
+        const status = document.getElementById('status');
+        
+        try {
+            status.textContent = '正在加载 Three.js...';
+            const THREE = await import('three');
+            status.textContent = '✅ Three.js 加载成功! 版本: ' + THREE.REVISION;
+            status.style.color = 'green';
+            
+            // 测试 OrbitControls
+            status.textContent += '\n正在加载 OrbitControls...';
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+            status.textContent = '✅ Three.js 和 OrbitControls 都加载成功!';
+            
+            // 创建一个简单的场景测试
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(200, 200);
+            document.body.appendChild(renderer.domElement);
+            
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+            camera.position.z = 5;
+            renderer.render(scene, camera);
+            
+            status.innerHTML = '✅ Three.js 完全正常工作!<br>如果你能看到绿色方块，说明 WebGL 也正常。';
+            
+        } catch (err) {
+            status.textContent = '❌ 加载失败: ' + err.message;
+            status.style.color = 'red';
+            console.error('详细错误:', err);
+        }
+    </script>
+</body>
+</html>
+

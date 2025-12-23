@@ -1,0 +1,36 @@
+{
+  "name": "Cylinder Seams",
+  "description": "圆柱体展开缝线 - 沿一条母线切开",
+  "version": "1.0",
+  "seams": [
+    {
+      "id": "vertical_cut",
+      "name": "垂直切割线",
+      "type": "cut",
+      "description": "沿圆柱母线切开，使其可以展开成矩形",
+      "vertices": [0, 12, 24, 36]
+    },
+    {
+      "id": "bottom_edge",
+      "name": "底部边缘",
+      "type": "sew",
+      "description": "圆柱底部边缘",
+      "vertices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0]
+    },
+    {
+      "id": "top_edge",
+      "name": "顶部边缘",
+      "type": "sew",
+      "description": "圆柱顶部边缘",
+      "vertices": [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 36]
+    }
+  ],
+  "metadata": {
+    "unit": "cm",
+    "scale": 1,
+    "geometryType": "cylinder",
+    "radius": 1.0,
+    "height": 1.5
+  }
+}
+

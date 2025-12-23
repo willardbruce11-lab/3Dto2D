@@ -1,0 +1,62 @@
+{
+  "name": "Shirt Front Panel Seams",
+  "description": "缝线数据用于展开衬衫前片",
+  "version": "1.0",
+  "seams": [
+    {
+      "id": "left_side",
+      "name": "左侧缝线",
+      "type": "cut",
+      "description": "左侧边缘，与后片缝合",
+      "vertices": [0, 11, 22, 33, 44]
+    },
+    {
+      "id": "right_side", 
+      "name": "右侧缝线",
+      "type": "cut",
+      "description": "右侧边缘，与后片缝合",
+      "vertices": [10, 21, 32, 43, 52]
+    },
+    {
+      "id": "bottom_hem",
+      "name": "底部下摆",
+      "type": "sew",
+      "description": "底部折边",
+      "vertices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    },
+    {
+      "id": "neckline",
+      "name": "领口",
+      "type": "cut",
+      "description": "领口边缘",
+      "vertices": [44, 45, 46, 47, 48, 49, 50, 51, 52]
+    },
+    {
+      "id": "shoulder_left",
+      "name": "左肩缝线",
+      "type": "sew",
+      "description": "左肩部分，与袖子连接",
+      "edges": [
+        [33, 44],
+        [44, 45]
+      ]
+    },
+    {
+      "id": "shoulder_right",
+      "name": "右肩缝线", 
+      "type": "sew",
+      "description": "右肩部分，与袖子连接",
+      "edges": [
+        [43, 52],
+        [52, 53]
+      ]
+    }
+  ],
+  "metadata": {
+    "unit": "cm",
+    "scale": 10,
+    "garmentType": "shirt",
+    "piece": "front"
+  }
+}
+

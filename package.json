@@ -1,0 +1,15 @@
+{
+  "name": "3d-to-2d-cloth-flattener",
+  "version": "1.0.0",
+  "description": "Web-based 3D editor for flattening cloth meshes with seam data",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 3000 -c-1",
+    "dev": "npx live-server --port=3000"
+  },
+  "keywords": ["3d", "cloth", "flattening", "seam", "threejs"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {}
+}
+
