@@ -267,18 +267,32 @@ export class SeamExtractor {
     }
     
     /**
+     * 检查路径是否闭合
+     */
+    checkIfClosed(path, eps) {
+        if (path.length < 3) return false;
+        const vStart = this.meshData.vertices[path[0]];
+        const vEnd = this.meshData.vertices[path[path.length - 1]];
+        return this.distance(vStart, vEnd) < eps;
+    }
+
+    /**
      * 获取缝线数据
      */
     getSeamData() {
+        const eps = this.modelSize * 0.01;
         return {
-            seams: this.seamPaths.map((path, index) => ({
-                id: `seam_${index}`,
-                type: 'cut',
-                vertices: path.vertices,
-                edges: this.pathToEdges(path.vertices),
-                isClosed: path.isClosed,
-                waypointCount: path.waypointIndices.length
-            })),
+            seams: this.seamPaths.map((path, index) => {
+                const isClosed = this.checkIfClosed(path.vertices, eps);
+                return {
+                    id: `seam_${index}`,
+                    type: 'cut',
+                    vertices: path.vertices,
+                    edges: this.pathToEdges(path.vertices),
+                    isClosed: isClosed,
+                    waypointCount: path.waypointIndices.length
+                };
+            }),
             totalSeams: this.seamPaths.length,
             totalEdges: this.seamEdges.size,
             redVertexCount: this.redVertices.length

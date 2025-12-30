@@ -89,12 +89,20 @@ export class FloodSegmenter {
         const subMeshes = [];
         for (let idx = 0; idx < validIslands.length; idx++) {
             const faceIndices = validIslands[idx];
+            
+            // 在剔除红边前，先记录该区域包含的红点（用于后续分类）
+            const internalRedVertices = new Set();
+            for (const fIdx of faceIndices) {
+                for (const vIdx of mesh.faces[fIdx]) {
+                    if (redSet.has(vIdx)) internalRedVertices.add(vIdx);
+                }
+            }
+
             const subMesh = this.buildSubMeshWithKerf(mesh, faceIndices, redSet);
             if (subMesh && subMesh.faces.length >= minFaces) {
-                console.log(`  裁片 #${idx}: ${subMesh.faces.length} 面, ${subMesh.vertices.length} 顶点 (剔除红边后)`);
+                subMesh.internalRedVertices = internalRedVertices; // 附加红点信息
+                console.log(`  裁片 #${idx}: ${subMesh.faces.length} 面, ${subMesh.vertices.length} 顶点, 包含 ${internalRedVertices.size} 个红点`);
                 subMeshes.push(subMesh);
-            } else if (subMesh) {
-                console.log(`  裁片 #${idx}: 剔除后面数不足 (${subMesh.faces.length} 面), 丢弃`);
             }
         }
 

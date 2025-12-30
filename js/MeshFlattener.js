@@ -4,6 +4,9 @@
  */
 
 import { SeamProcessor } from './SeamProcessor.js';
+import { Classifier } from './Classifier.js';
+import { PhysicsFlattener } from './PhysicsFlattener.js';
+import { TopologicalSurgery } from './TopologicalSurgery.js';
 
 export class MeshFlattener {
     constructor(options = {}) {
@@ -85,21 +88,42 @@ export class MeshFlattener {
         const localFaces = piece.faces.map(faceIndex => {
             return meshData.faces[faceIndex].map(v => vertexMap.get(v));
         });
-        
-        // 初始化2D坐标
-        let uv = this.initializeUV(localVertices, localFaces, meshData);
-        
-        // 根据方法选择优化算法
-        switch (this.method) {
-            case 'angle-based':
-                uv = await this.optimizeABF(uv, localVertices, localFaces, meshData);
-                break;
-            case 'conformal':
-                uv = await this.optimizeConformal(uv, localVertices, localFaces, meshData);
-                break;
-            case 'lscm':
-                uv = await this.optimizeLSCM(uv, localVertices, localFaces, meshData);
-                break;
+
+        // 构建子网格对象
+        const subMesh = {
+            vertices: localVertices.map(v => v.pos3D),
+            faces: localFaces,
+            internalRedVertices: piece.internalRedVertices
+        };
+
+        // 策略分发
+        let uv;
+        const physics = new PhysicsFlattener();
+
+        if (piece.internalRedVertices && piece.internalRedVertices.size > 5) {
+            // 策略：含内部裁线曲面
+            console.log(`  裁片 #${pieceIndex}: 使用含内部裁线策略`);
+            // 1. 拓扑切割 (Topological Surgery)
+            const surgery = new TopologicalSurgery();
+            const cutMesh = surgery.cut(subMesh, piece.internalRedVertices);
+            // 2. 弹性展开
+            const initialUV = physics.computePlanarProjection(cutMesh);
+            uv = await physics.relaxDifferentiated(cutMesh, initialUV, {
+                iterations: 300,
+                boundaryStiffness: 50.0,
+                internalStiffness: 0.2
+            });
+        } else {
+            // 策略：无内部裁线曲面
+            console.log(`  裁片 #${pieceIndex}: 使用无内部裁线策略`);
+            // 1. 最优投影
+            const initialUV = physics.computePlanarProjection(subMesh);
+            // 2. 弹性展开
+            uv = await physics.relaxDifferentiated(subMesh, initialUV, {
+                iterations: 200,
+                boundaryStiffness: 30.0,
+                internalStiffness: 0.5
+            });
         }
         
         // 计算边界
